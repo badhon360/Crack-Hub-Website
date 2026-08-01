@@ -1,4 +1,4 @@
-impor {/* Quick Filter */}
+import {/* Quick Filter */}
           <div className="relative w-full sm:w-64">
             <label htmlFor="dashboard-search-input" className="sr-only">Search app name</label>
             <Search className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
