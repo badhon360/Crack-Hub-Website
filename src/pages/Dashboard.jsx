@@ -3,6 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { getApps, addApp, updateApp, deleteApp, logoutAdmin } from '../services/firebase';
 import { Plus, Trash2, Edit3, LogOut, Search, Terminal, AlertCircle, Loader2 } from 'lucide-react';
 
+const isValidUrl = (url) => {
+  try {
+    const parsed = new URL(url);
+
+    return (
+      parsed.protocol === "https:" ||
+      parsed.protocol === "http:"
+    );
+  } catch {
+    return false;
+  }
+};
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [appsList, setAppsList] = useState([]);
@@ -21,7 +34,6 @@ export default function Dashboard() {
   const [banner, setBanner] = useState('');
   const [downloadUrl, setDownloadUrl] = useState('');
   const [screenshots, setScreenshots] = useState('');
-
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteError, setDeleteError] = useState('');
   const [deleteSuccessMsg, setDeleteSuccessMsg] = useState('');
@@ -92,7 +104,6 @@ export default function Dashboard() {
       setDeleteError('');
       console.log('[Dashboard] Executing delete for app ID:', appId);
 
-      // Remove deleted app from UI state immediately
       setAppsList((prev) => prev.filter((item) => item.id !== appId && item.firestoreId !== appId));
 
       await deleteApp(appId);
@@ -116,51 +127,85 @@ export default function Dashboard() {
 
     // Validation
     if (!appName.trim()) {
-      setFormError('App Name is required.');
-      return;
+      return setFormError("App Name is required.");
     }
+
+    if (appName.trim().length < 3) {
+      return setFormError("App Name must be at least 3 characters.");
+    }
+
     if (!version.trim()) {
-      setFormError('Version is required.');
-      return;
+      return setFormError("Version is required.");
     }
+
     if (!size.trim()) {
-      setFormError('App Size is required.');
-      return;
+      return setFormError("Size is required.");
     }
+
     if (!description.trim()) {
-      setFormError('Description is required.');
-      return;
+      return setFormError("Description is required.");
     }
+
+    if (description.trim().length < 20) {
+      return setFormError("Description must be at least 20 characters.");
+    }
+
     if (!icon.trim()) {
-      setFormError('Icon URL is required.');
-      return;
+      return setFormError("Icon URL is required.");
     }
+
+    if (!isValidUrl(icon.trim())) {
+      return setFormError("Invalid Icon URL.");
+    }
+
     if (!banner.trim()) {
-      setFormError('Banner Image URL is required.');
-      return;
+      return setFormError("Banner URL is required.");
     }
+
+    if (!isValidUrl(banner.trim())) {
+      return setFormError("Invalid Banner URL.");
+    }
+
     if (!downloadUrl.trim()) {
-      setFormError('GitHub APK Download link is required.');
-      return;
+      return setFormError("Download URL is required.");
+    }
+
+    if (!isValidUrl(downloadUrl.trim())) {
+      return setFormError("Invalid Download URL.");
+    }
+
+    // Prevent duplicate app names
+    const alreadyExists = appsList.some(app => {
+      const currentName = (app.appName || app.title || "").trim().toLowerCase();
+      return (
+        !editingApp &&
+        currentName === appName.trim().toLowerCase()
+      );
+    });
+
+    if (alreadyExists) {
+      return setFormError("This app already exists.");
     }
 
     setIsSaving(true);
 
     const screenshotArray = screenshots
-      .split(',')
-      .map((s) => s.trim())
-      .filter((s) => s !== '');
+      .split(",")
+      .map(s => s.trim())
+      .filter(Boolean)
+      .filter(isValidUrl);
 
     const appPayload = {
-      appName: appName.trim(),
       title: appName.trim(),
+      appName: appName.trim(),
       version: version.trim(),
       size: size.trim(),
       description: description.trim(),
       icon: icon.trim(),
       banner: banner.trim(),
       downloadUrl: downloadUrl.trim(),
-      screenshots: screenshotArray
+      screenshots: screenshotArray,
+      downloads: editingApp?.downloads ?? 0
     };
 
     try {
