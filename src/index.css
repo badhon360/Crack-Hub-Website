@@ -18,7 +18,6 @@
   }
 }
 
-/* Custom Cyberpunk & Frosted Glass Utilities */
 .frosted-glass {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(16px);
