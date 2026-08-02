@@ -56,7 +56,10 @@ export default function AppCard({ app }) {
         </div>
 
         {/* Description */}
-        <p className="text-xs font-mono text-gray-300 line-clamp-2 leading-relaxed">
+        <p
+          className="text-[14px] text-gray-300 leading-6 line-clamp-2 tracking-wide"
+          style={{ fontFamily: "'Chakra Petch', sans-serif" }}
+        >
           {app.description}
         </p>
 
