@@ -73,16 +73,19 @@ if (!app) {
       {/* App Details Main Card */}
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
         
-        {/* 1. Banner Image */}
-        <div className="relative h-48 sm:h-64 w-full bg-black/60">
+      {/* 1. Banner Image */}
+      <div className="relative h-48 sm:h-64 w-full bg-black/60">
+        {app.banner && (
           <img
-            src={app.banner || 'https://picsum.photos/seed/cyber/800/400'}
+           src={app.banner}
             alt={app.title}
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-black/60"></div>
-        </div>
+        )}
+
+  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-black/60"></div>
+</div>
 
         {/* Content Body */}
         <div className="p-6 sm:p-8 -mt-16 relative z-10 space-y-8">
@@ -175,4 +178,3 @@ if (!app) {
     </div>
   );
 }
-
