@@ -35,12 +35,12 @@ export default function AppCard({ app }) {
         <div className="flex items-start space-x-3">
           <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-white/20 shadow-md shadow-black bg-black flex-shrink-0 group-hover:border-[#00ff41] transition-colors">
             <img
-              src={item.icon}
-              alt={item.appName}
+              src={app.icon}
+              alt={app.title}
               loading="lazy"
               decoding="async"
-              onError={() => setImgError(true)}
-              className="w-8 h-8 rounded object-cover"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover"
             />
           </div>
 
